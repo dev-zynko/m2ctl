@@ -36,3 +36,17 @@ func CreateKey(name string, val string) {
 		log.Fatal("Failed seting key in registry", err)
 	}
 }
+
+func GetKey(name string) string {
+	regKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `Software\M2ctl\`, registry.ALL_ACCESS)
+	if err != nil {
+		log.Fatal("Failed to open registry", err)
+	}
+
+	val, _, err := regKey.GetStringValue(name)
+	if err != nil {
+		log.Fatal("Failed to retrieve key from registry", err)
+	}
+
+	return val
+}
