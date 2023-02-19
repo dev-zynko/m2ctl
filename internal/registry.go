@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 
 	"golang.org/x/sys/windows/registry"
@@ -49,4 +50,23 @@ func GetKey(name string) string {
 	}
 
 	return val
+}
+
+func DeleteKey(tag string) {
+	regKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `Software\M2ctl\`, registry.ALL_ACCESS)
+	if err != nil {
+		log.Fatal("Failed to open registry", err)
+	}
+
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_HOST_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_USERNAME_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_PASSWORD_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_SSH-KEY-FILE_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_SSH-KEY-PASS_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-REPO-URL_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-USER_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-EMAIL_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-SSH-KEY-FILE_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-SSH-KEY-PASS_%s", tag))
+
 }
