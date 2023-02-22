@@ -9,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 func Tar(source, target string) error {
@@ -92,5 +94,13 @@ func Gzip(file string, target string) {
 	archiver.Name = filename
 	defer archiver.Close()
 
-	_, err = io.Copy(archiver, reader)
+	fi, _ := reader.Stat()
+	bar := progressbar.DefaultBytes(
+		fi.Size(),
+		"Giziping tarball",
+	)
+	_, err = io.Copy(io.MultiWriter(archiver, bar), reader)
+	if err != nil {
+		log.Fatal("Failed to gizip", err)
+	}
 }
