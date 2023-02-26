@@ -9,11 +9,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/schollz/progressbar/v3"
 )
 
-func Tar(source, target string) error {
+func Tar(source, target string, wait *sync.WaitGroup) error {
+	defer wait.Done()
 	filename := filepath.Base(source)
 	target = filepath.Join(target, fmt.Sprintf("%s.tar", filename))
 	strings.ReplaceAll(target, `\`, "/")
@@ -75,7 +77,8 @@ func Tar(source, target string) error {
 
 }
 
-func Gzip(file string, target string) {
+func Gzip(file string, target string, wait *sync.WaitGroup) {
+	defer wait.Done()
 	reader, err := os.Open(file)
 	if err != nil {
 		log.Fatal("Failed to open file", err)
