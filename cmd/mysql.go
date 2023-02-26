@@ -31,5 +31,6 @@ func init() {
 	rootCmd.AddCommand(&mysqlCmd)
 	mysqlCmd.AddCommand(&mysqlBackupCmd)
 	mysqlCmd.AddCommand(&mysqlUploadBackupCmd)
+	mysqlCmd.AddCommand(&mysqlCreateUserCmd)
 	mysqlCmd.AddCommand(&mysqlDeleteUserCmd)
 }
