@@ -38,18 +38,18 @@ func CreateKey(name string, val string) {
 	}
 }
 
-func GetKey(name string) string {
+func GetKey(name string) (string, error) {
 	regKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `Software\M2ctl\`, registry.ALL_ACCESS)
 	if err != nil {
-		log.Fatal("Failed to open registry", err)
+		return "", err
 	}
 
 	val, _, err := regKey.GetStringValue(name)
 	if err != nil {
-		log.Fatal("Failed to retrieve key from registry", err)
+		return "", err
 	}
 
-	return val
+	return val, nil
 }
 
 func DeleteKey(tag string) {
@@ -68,5 +68,7 @@ func DeleteKey(tag string) {
 	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-EMAIL_%s", tag))
 	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-SSH-KEY-FILE_%s", tag))
 	regKey.DeleteValue(fmt.Sprintf("M2CTL_GIT-SSH-KEY-PASS_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_MYSQL-PASS_%s", tag))
+	regKey.DeleteValue(fmt.Sprintf("M2CTL_FILES_%s", tag))
 
 }
