@@ -39,6 +39,15 @@ var profileCreateCmd = cobra.Command{
 			log.Fatal("You need to provide either username and password or the path to the ssh-key-fle and the ssh-key-pass")
 		}
 
+		mysqlPass, _ := cmd.Flags().GetString("mysql-pass")
+		files, _ := cmd.Flags().GetString("files")
+		if mysqlPass != "" && files != "" {
+			internal.CreateKey(fmt.Sprintf("M2CTL_MYSQL-PASS_%s", tag), mysqlPass)
+			internal.CreateKey(fmt.Sprintf("M2CTL_FILES_%s", tag), files)
+		} else {
+			log.Fatal("mysql-pass and files flag are mandatory")
+		}
+
 		internal.CreateRegistryKey()
 
 		if username != "" && password != "" {
@@ -98,6 +107,8 @@ func init() {
 	profileCreateCmd.PersistentFlags().String("git-email", "", "Email of your git user")
 	profileCreateCmd.PersistentFlags().String("git-ssh-file", "", "Path of your local ssh key file for git online repo")
 	profileCreateCmd.PersistentFlags().String("git-ssh-pass", "", "Password of ssh file if one is set")
+	profileCreateCmd.PersistentFlags().String("mysql-pass", "", "Sets the root password for your mysql instance this will be saved to the registry")
+	profileCreateCmd.PersistentFlags().String("files", "", "Set the types of files you use and will execute diffrent commands you can select from [fliegeV2|fliegeV3|Marty|SuraHead|Reference]")
 	profileCreateCmd.PersistentFlags().String("tag", "", "A tag which you can use to refrence the profile in other resources")
 
 	profileDeleteCmd.PersistentFlags().String("tag", "", "Profile with the follwoing tag will be delted")
