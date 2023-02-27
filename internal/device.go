@@ -29,11 +29,11 @@ func InitSSHDevice(cmd *cobra.Command) Device {
 		log.Fatal("Tag is mandatory!")
 	}
 
-	host := GetKey(fmt.Sprintf("M2CTL_HOST_%s", device.Tag))
-	user := GetKey(fmt.Sprintf("M2CTL_USERNAME_%s", device.Tag))
-	pass := GetKey(fmt.Sprintf("M2CTL_PASSWORD_%s", device.Tag))
-	keyFile := GetKey(fmt.Sprintf("M2CTL_SSH-KEY-FILE_%s", device.Tag))
-	keyFilePass := GetKey(fmt.Sprintf("M2CTL_SSH-KEY-PASS_%s", device.Tag))
+	host, _ := GetKey(fmt.Sprintf("M2CTL_HOST_%s", device.Tag))
+	user, _ := GetKey(fmt.Sprintf("M2CTL_USERNAME_%s", device.Tag))
+	pass, _ := GetKey(fmt.Sprintf("M2CTL_PASSWORD_%s", device.Tag))
+	keyFile, _ := GetKey(fmt.Sprintf("M2CTL_SSH-KEY-FILE_%s", device.Tag))
+	keyFilePass, _ := GetKey(fmt.Sprintf("M2CTL_SSH-KEY-PASS_%s", device.Tag))
 
 	if keyFile != "" {
 		device.Session, device.Client = AuthToSSHWithKey(keyFile, keyFilePass)
