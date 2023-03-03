@@ -16,11 +16,43 @@ var serverCmd = cobra.Command{
 var serverStartCmd = cobra.Command{
 	Use:   "start",
 	Short: "Starts the game server",
+	Run: func(cmd *cobra.Command, args []string) {
+		device := internal.InitSSHDevice(cmd)
+
+		if device.Debug {
+			internal.StdOutPrinter(device.Stdout)
+			internal.StdErrPrinter(device.Stderr)
+		}
+
+		files, err := internal.GetKey(fmt.Sprintf("M2CTL_FILES_%s", device.Tag))
+		if err != nil {
+			log.Fatal("Error geting profile key files", err)
+		}
+
+		device.Session.Run(internal.ServerCommands("start", files))
+		device.Session.Close()
+	},
 }
 
 var serverStopCmd = cobra.Command{
 	Use:   "stop",
 	Short: "Stops the game server",
+	Run: func(cmd *cobra.Command, args []string) {
+		device := internal.InitSSHDevice(cmd)
+
+		if device.Debug {
+			internal.StdOutPrinter(device.Stdout)
+			internal.StdErrPrinter(device.Stderr)
+		}
+
+		files, err := internal.GetKey(fmt.Sprintf("M2CTL_FILES_%s", device.Tag))
+		if err != nil {
+			log.Fatal("Error geting profile key files", err)
+		}
+
+		device.Session.Run(internal.ServerCommands("stop", files))
+		device.Session.Close()
+	},
 }
 
 var clearLogsCmd = cobra.Command{
@@ -58,4 +90,10 @@ func init() {
 
 	reloadQuestsCmd.PersistentFlags().Bool("debug", false, "Set debug to true in order to see stdout and stderr on your server")
 	reloadQuestsCmd.PersistentFlags().String("tag", "", "Refrence to create profile and which data to use")
+
+	serverStartCmd.PersistentFlags().Bool("debug", false, "Set debug to true in order to see stdout and stderr on your server")
+	serverStartCmd.PersistentFlags().String("tag", "", "Refrence to create profile and which data to use")
+
+	serverStopCmd.PersistentFlags().Bool("debug", false, "Set debug to true in order to see stdout and stderr on your server")
+	serverStopCmd.PersistentFlags().String("tag", "", "Refrence to create profile and which data to use")
 }
