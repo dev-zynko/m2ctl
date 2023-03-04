@@ -18,6 +18,7 @@ var profileCreateCmd = cobra.Command{
 	Use:   "create",
 	Short: "creates a new profile",
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.CreateRegistryKey()
 		tag, err := cmd.Flags().GetString("tag")
 		if tag == "" || err != nil {
 			log.Fatal("The flag tag is mandatory", err)
@@ -47,8 +48,6 @@ var profileCreateCmd = cobra.Command{
 		} else {
 			log.Fatal("mysql-pass and files flag are mandatory")
 		}
-
-		internal.CreateRegistryKey()
 
 		if username != "" && password != "" {
 			internal.CreateKey(fmt.Sprintf("M2CTL_USERNAME_%s", tag), username)
