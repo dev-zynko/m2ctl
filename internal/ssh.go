@@ -32,12 +32,25 @@ func AuthToSSHWithCredentials(host string, username string, password string) (*s
 		log.Fatal("Failed creating ssh session", err)
 	}
 
+	modes := ssh.TerminalModes{
+		ssh.ECHO:          1,
+		ssh.TTY_OP_ISPEED: 14400,
+		ssh.TTY_OP_OSPEED: 14400,
+	}
+
+	term := os.Getenv("TERM")
+	if term == "" {
+		term = "xterm-256color"
+	}
+
+	session.RequestPty(term, 100, 100, modes)
+
 	return session, client
 
 }
 
-func AuthToSSHWithKey(key string, password string) {
-
+func AuthToSSHWithKey(key string, password string) (*ssh.Session, *ssh.Client) {
+	return nil, nil
 }
 
 func MoveFileOverSFTP(srcPath string, dstPath string, client *ssh.Client, wg *sync.WaitGroup) {
@@ -121,3 +134,5 @@ func StdErrPrinter(stderr io.Reader) {
 		}
 	}()
 }
+
+func GetOutput(stdout io.Reader) (string, error) { return "", nil }
