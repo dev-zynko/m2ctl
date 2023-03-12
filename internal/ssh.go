@@ -53,7 +53,7 @@ func AuthToSSHWithKey(key string, password string) (*ssh.Session, *ssh.Client) {
 	return nil, nil
 }
 
-func MoveFileOverSFTP(srcPath string, dstPath string, client *ssh.Client, wg *sync.WaitGroup) {
+func MoveFileOverSFTP(desc string, srcPath string, dstPath string, client *ssh.Client, wg *sync.WaitGroup) {
 	defer wg.Done()
 	sftp, err := sftp.NewClient(client)
 	if err != nil {
@@ -76,7 +76,7 @@ func MoveFileOverSFTP(srcPath string, dstPath string, client *ssh.Client, wg *sy
 	fi, _ := srcFile.Stat()
 	bar := progressbar.DefaultBytes(
 		fi.Size(),
-		"Uploading server source",
+		desc,
 	)
 
 	_, err = io.Copy(io.MultiWriter(dstFile, bar), srcFile)
