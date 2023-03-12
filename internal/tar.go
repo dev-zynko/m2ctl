@@ -14,17 +14,17 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-func Tar(source, target string, wait *sync.WaitGroup) error {
-	defer wait.Done()
-	filename := filepath.Base(source)
-	target = filepath.Join(target, fmt.Sprintf("%s.tar", filename))
-	strings.ReplaceAll(target, `\`, "/")
+func Tar(source string, wait *sync.WaitGroup) error {
+	target := "server-source.tar"
+
+	//strings.ReplaceAll(target, `\`, "/")
+	fmt.Print(target)
+
 	tarfile, err := os.Create(target)
 	if err != nil {
 		return err
 	}
 	defer tarfile.Close()
-
 	tarball := tar.NewWriter(tarfile)
 	defer tarball.Close()
 
@@ -42,6 +42,7 @@ func Tar(source, target string, wait *sync.WaitGroup) error {
 
 	return filepath.Walk(source,
 		func(path string, info os.FileInfo, err error) error {
+			defer wait.Done()
 			if err != nil {
 				return err
 			}
